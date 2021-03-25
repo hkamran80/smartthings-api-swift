@@ -10,8 +10,8 @@ import SwiftyJSON
 
 public final class SmartThingsAPI: API {
     // swiftformat:disable:next all
-    final let baseUrl: URL = URL(string: "https://api.smartthings.com/v1")!
-    var accessToken: String
+    final public let baseUrl: URL = URL(string: "https://api.smartthings.com/v1")!
+    public var accessToken: String
     
     public init(accessToken: String) {
         self.accessToken = accessToken
@@ -33,6 +33,8 @@ public final class SmartThingsAPI: API {
                     print("[JSON Error] \(error.localizedDescription)")
                     completionHandler(.failure(.badJson))
                 }
+            } else {
+                completionHandler(.failure(.requestFailed))
             }
         }
         
@@ -61,7 +63,7 @@ public final class SmartThingsAPI: API {
                     completionHandler(.success(data))
                 }
             } else {
-                completionHandler(.failure(.other))
+                completionHandler(.failure(.unknownError))
             }
         }
         

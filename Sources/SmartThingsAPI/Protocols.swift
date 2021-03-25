@@ -7,7 +7,7 @@
 
 import Foundation
 
-internal protocol API {
+public protocol API {
     var baseUrl: URL { get }
     var accessToken: String { get }
 

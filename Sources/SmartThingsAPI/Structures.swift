@@ -31,7 +31,8 @@ public enum PowerState {
 public enum RequestError: Error {
     case badUrl
     case badJson
-    case other
+    case requestFailed
+    case unknownError
 }
 
 // MARK: - Internal Enums
