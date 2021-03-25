@@ -47,10 +47,7 @@ public final class SmartThingsAPI: API {
     }
     
     private func performRequest(path: apiPath, method: httpMethod, completionHandler: @escaping (Result<Data, RequestError>) -> Void) {
-        guard let url = URL(string: path.rawValue) else {
-            completionHandler(.failure(.badUrl))
-            return
-        }
+        let url = self.baseUrl.appendingPathComponent(path.rawValue)
         
         let session = URLSession.shared
         var request = URLRequest(url: url)
