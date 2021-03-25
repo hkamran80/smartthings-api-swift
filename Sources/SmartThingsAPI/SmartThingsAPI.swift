@@ -13,11 +13,11 @@ public final class SmartThingsAPI: API {
     final let baseUrl: URL = URL(string: "https://api.smartthings.com/v1")!
     var accessToken: String
     
-    init(accessToken: String) {
+    public init(accessToken: String) {
         self.accessToken = accessToken
     }
     
-    func getDevices(completionHandler: @escaping ([Device]) -> Void) {
+    public func getDevices(completionHandler: @escaping ([Device]) -> Void) {
         var devices = [Device]()
         performRequest(path: .devices, method: .get) { result in
             if case .success(let data) = result {
@@ -37,11 +37,11 @@ public final class SmartThingsAPI: API {
         
     }
     
-    func getState(deviceId: String) -> State {
+    public func getState(deviceId: String) -> State {
         return State(state: .off, percentage: nil)
     }
     
-    func setState(deviceId: String, state: PowerState, percentage: Double?) -> State {
+    public func setState(deviceId: String, state: PowerState, percentage: Double?) -> State {
         return State(state: .off, percentage: nil)
     }
     
