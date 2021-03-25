@@ -10,14 +10,14 @@ import Foundation
 // MARK: - Structs
 
 public struct Device {
-    let id: String
-    let name: String
-    let capabilities: [String]
+    public let id: String
+    public let name: String
+    public let capabilities: [String]
 }
 
 public struct State {
-    let state: PowerState
-    let percentage: Double?
+    public let state: PowerState
+    public let percentage: Double?
 }
 
 // MARK: - Enums

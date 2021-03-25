@@ -24,7 +24,7 @@ public final class SmartThingsAPI: API {
                 do {
                     let json = try JSON(data: data)
                     
-                    json.forEach { _, device in
+                    json["items"].forEach { _, device in
                         devices.append(Device(id: device["deviceId"].stringValue, name: device["label"].stringValue != "" ? device["label"].stringValue : device["name"].stringValue, capabilities: device["components"]["capabilities"].map { $1["id"].stringValue }))
                     }
                     
