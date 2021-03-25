@@ -11,7 +11,7 @@ internal protocol API {
     var baseUrl: URL { get }
     var accessToken: String { get }
 
-    func getDevices(completionHandler: @escaping ([Device]) -> Void)
+    func getDevices(completionHandler: @escaping (Result<[Device], RequestError>) -> Void)
     func getState(deviceId: String) -> State
     func setState(deviceId: String, state: PowerState, percentage: Double?) -> State
 

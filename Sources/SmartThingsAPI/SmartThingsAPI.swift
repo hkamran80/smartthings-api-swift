@@ -17,7 +17,7 @@ public final class SmartThingsAPI: API {
         self.accessToken = accessToken
     }
     
-    public func getDevices(completionHandler: @escaping ([Device]) -> Void) {
+    public func getDevices(completionHandler: @escaping (Result<[Device], RequestError>) -> Void) {
         var devices = [Device]()
         performRequest(path: .devices, method: .get) { result in
             if case .success(let data) = result {
@@ -28,9 +28,10 @@ public final class SmartThingsAPI: API {
                         devices.append(Device(id: device["deviceId"].stringValue, name: device["label"].stringValue != "" ? device["label"].stringValue : device["name"].stringValue, capabilities: device["components"]["capabilities"].map { $1["id"].stringValue }))
                     }
                     
-                    completionHandler(devices)
+                    completionHandler(.success(devices))
                 } catch {
                     print("[JSON Error] \(error.localizedDescription)")
+                    completionHandler(.failure(.badJson))
                 }
             }
         }
