@@ -1,7 +1,7 @@
 import XCTest
 
-import SmartThingsTests
+import SmartThingsAPITests
 
 var tests = [XCTestCaseEntry]()
-tests += SmartThingsTests.allTests()
+tests += SmartThingsAPITests.allTests()
 XCTMain(tests)
