@@ -18,11 +18,12 @@ public final class SmartThingsAPI: API {
     }
     
     public func getDevices(completionHandler: @escaping (Result<[Device], RequestError>) -> Void) {
-        var devices = [Device]()
+        
         performRequest(path: .devices, method: .get) { result in
             if case .success(let data) = result {
                 do {
                     let json = try JSON(data: data)
+                    var devices: [Device] = []
                     
                     json["items"].forEach { _, device in
                         devices.append(Device(id: device["deviceId"].stringValue, name: device["label"].stringValue != "" ? device["label"].stringValue : device["name"].stringValue, capabilities: device["components"]["capabilities"].map { $1["id"].stringValue }))
