@@ -32,6 +32,7 @@ public enum RequestError: Error {
     case badUrl
     case badJson
     case requestFailed
+    case dataNotSet
     case unknownError
 }
 

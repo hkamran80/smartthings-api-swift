@@ -21,16 +21,15 @@ public final class SmartThingsAPI: API {
         print("Fetching device list...")
         
         self.performRequest(path: .devices, method: .get) { result in
+            var devices: [Device] = []
+            
             if case .success(let responseData) = result {
                 do {
                     let json = try JSON(data: responseData)
-                    var devices: [Device] = []
                     
                     print("Iterating...")
                     
-                    json["items"].forEach { t, device in
-                        print("Iteration \(t)")
-                        
+                    json["items"].forEach { _, device in                        
                         let deviceName = device["label"].stringValue != "" ? device["label"].stringValue : device["name"].stringValue
                         let deviceCapabilities = device["components"]["capabilities"]
                         
@@ -86,6 +85,9 @@ public final class SmartThingsAPI: API {
                 if let data = data {
                     print(data)
                     completionHandler(.success(data))
+                } else {
+                    print("Data is not set!")
+                    completionHandler(.failure(.dataNotSet))
                 }
             }
         }
