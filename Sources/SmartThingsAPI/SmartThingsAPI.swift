@@ -18,15 +18,35 @@ public final class SmartThingsAPI: API {
     }
     
     public func getDevices(completionHandler: @escaping (Result<[Device], RequestError>) -> Void) {
-        
-        performRequest(path: .devices, method: .get) { result in
-            if case .success(let data) = result {
+        self.performRequest(path: .devices, method: .get) { result in
+            if case .success(let responseData) = result {
+//                do {
+//                    let json = try JSON(data: data)
+//                    var devices: [Device] = []
+//
+//                    json["items"].forEach { _, device in
+//                        devices.append(Device(id: device["deviceId"].stringValue, name: device["label"].stringValue != "" ? device["label"].stringValue : device["name"].stringValue, capabilities: device["components"]["capabilities"].map { $1["id"].stringValue }))
+//                    }
+//
+//                    completionHandler(.success(devices))
+//                } catch {
+//                    print("[JSON Error] \(error.localizedDescription)")
+//                    completionHandler(.failure(.badJson))
+//                }
+                
                 do {
-                    let json = try JSON(data: data)
+                    let json = try JSON(data: responseData)
                     var devices: [Device] = []
                     
                     json["items"].forEach { _, device in
-                        devices.append(Device(id: device["deviceId"].stringValue, name: device["label"].stringValue != "" ? device["label"].stringValue : device["name"].stringValue, capabilities: device["components"]["capabilities"].map { $1["id"].stringValue }))
+                        let deviceName = device["label"].stringValue != "" ? device["label"].stringValue : device["name"].stringValue
+                        let deviceCapabilities = device["components"]["capabilities"]
+                        
+                        print(deviceCapabilities)
+                        
+                        let element = Device(id: device["deviceId"].stringValue, name: deviceName, capabilities: ["Coming", "Soon"])
+
+                        devices.append(element)
                     }
                     
                     completionHandler(.success(devices))
@@ -38,7 +58,6 @@ public final class SmartThingsAPI: API {
                 completionHandler(.failure(.requestFailed))
             }
         }
-        
     }
     
     public func getState(deviceId: String) -> State {
@@ -49,8 +68,14 @@ public final class SmartThingsAPI: API {
         return State(state: .off, percentage: nil)
     }
     
-    private func performRequest(path: apiPath, method: httpMethod, completionHandler: @escaping (Result<Data, RequestError>) -> Void) {
-        let url = self.baseUrl.appendingPathComponent(path.rawValue)
+    private func performRequest(path: Endpoints, method: HTTPMethods, completionHandler: @escaping (Result<Data, RequestError>) -> Void) {
+        guard let url = URL(string: path.rawValue, relativeTo: self.baseUrl) else {
+            completionHandler(.failure(.badUrl))
+            return
+        }
+        
+        // TODO: Remove
+        print("performRequest -- url: \(url)")
         
         let session = URLSession.shared
         var request = URLRequest(url: url)

@@ -37,11 +37,11 @@ public enum RequestError: Error {
 
 // MARK: - Internal Enums
 
-internal enum apiPath: String {
+public enum Endpoints: String {
     case devices = "/devices"
 }
 
-internal enum httpMethod: String {
+public enum HTTPMethods: String {
     case get = "GET"
     case post = "POST"
     case put = "PUT"
