@@ -18,6 +18,8 @@ public final class SmartThingsAPI: API {
     }
     
     public func getDevices(completionHandler: @escaping (Result<[Device], RequestError>) -> Void) {
+        print("Fetching device list...")
+        
         self.performRequest(path: .devices, method: .get) { result in
             if case .success(let responseData) = result {
                 do {
