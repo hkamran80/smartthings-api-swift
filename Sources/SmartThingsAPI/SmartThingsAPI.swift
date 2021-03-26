@@ -35,7 +35,7 @@ public final class SmartThingsAPI: API {
                         
                         print("Device (\(deviceName)) Capabilities: \(deviceCapabilities)")
                         
-                        let element = Device(id: device["deviceId"].stringValue, name: deviceName, capabilities: ["Coming", "Soon"])
+                        let element = Device(id: device["deviceId"].stringValue, name: deviceName, capabilities: [])
 
                         devices.append(element)
                     }
@@ -69,7 +69,7 @@ public final class SmartThingsAPI: API {
         }
         
         // TODO: Remove
-        print("performRequest -- url: \(url)")
+        print("(performRequest) url: \(url)")
         
         let session = URLSession.shared
         var request = URLRequest(url: url)
@@ -79,7 +79,7 @@ public final class SmartThingsAPI: API {
         
         let task = session.dataTask(with: request) { data, _, error in
             if let error = error {
-                print("performRequest (error): \(error.localizedDescription)")
+                print("(performRequest) Error: \(error.localizedDescription)")
                 completionHandler(.failure(.unknownError))
             } else {
                 if let data = data {
@@ -92,6 +92,10 @@ public final class SmartThingsAPI: API {
             }
         }
         
+        print("(performRequest) Notice: Task declared")
+        
         task.resume()
+        
+        print("(performRequest) Notice: Task resumed")
     }
 }
