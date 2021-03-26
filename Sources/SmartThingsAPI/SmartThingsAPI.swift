@@ -27,7 +27,7 @@ public final class SmartThingsAPI: API {
                     
                     json["items"].forEach { _, device in
                         let deviceName = device["label"].stringValue != "" ? device["label"].stringValue : device["name"].stringValue
-                        let deviceCapabilities = device["components"]["capabilities"]
+                        let deviceCapabilities = device["components"][0]["capabilities"]
                         
                         print(deviceCapabilities)
                         
