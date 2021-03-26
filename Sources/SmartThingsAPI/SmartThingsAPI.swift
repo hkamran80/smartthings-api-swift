@@ -20,41 +20,34 @@ public final class SmartThingsAPI: API {
     public func getDevices(completionHandler: @escaping (Result<[Device], RequestError>) -> Void) {
         self.performRequest(path: .devices, method: .get) { result in
             if case .success(let responseData) = result {
-//                do {
-//                    let json = try JSON(data: data)
-//                    var devices: [Device] = []
-//
-//                    json["items"].forEach { _, device in
-//                        devices.append(Device(id: device["deviceId"].stringValue, name: device["label"].stringValue != "" ? device["label"].stringValue : device["name"].stringValue, capabilities: device["components"]["capabilities"].map { $1["id"].stringValue }))
-//                    }
-//
-//                    completionHandler(.success(devices))
-//                } catch {
-//                    print("[JSON Error] \(error.localizedDescription)")
-//                    completionHandler(.failure(.badJson))
-//                }
-                
                 do {
                     let json = try JSON(data: responseData)
                     var devices: [Device] = []
                     
-                    json["items"].forEach { _, device in
+                    print("Iterating...")
+                    
+                    json["items"].forEach { t, device in
+                        print("Iteration \(t)")
+                        
                         let deviceName = device["label"].stringValue != "" ? device["label"].stringValue : device["name"].stringValue
                         let deviceCapabilities = device["components"]["capabilities"]
                         
-                        print(deviceCapabilities)
+                        print("Device (\(deviceName)) Capabilities: \(deviceCapabilities)")
                         
                         let element = Device(id: device["deviceId"].stringValue, name: deviceName, capabilities: ["Coming", "Soon"])
 
                         devices.append(element)
                     }
                     
+                    print("Iteration complete. Returning data to completion handler...")
+                    
                     completionHandler(.success(devices))
                 } catch {
-                    print("[JSON Error] \(error.localizedDescription)")
+                    print("[JSON Parsing] \(error.localizedDescription)")
                     completionHandler(.failure(.badJson))
                 }
             } else {
+                print("Request failed")
                 completionHandler(.failure(.requestFailed))
             }
         }
@@ -84,12 +77,14 @@ public final class SmartThingsAPI: API {
         request.setValue("Bearer \(self.accessToken)", forHTTPHeaderField: "Authorization")
         
         let task = session.dataTask(with: request) { data, _, error in
-            if error == nil {
+            if let error = error {
+                print("performRequest (error): \(error.localizedDescription)")
+                completionHandler(.failure(.unknownError))
+            } else {
                 if let data = data {
+                    print(data)
                     completionHandler(.success(data))
                 }
-            } else {
-                completionHandler(.failure(.unknownError))
             }
         }
         
