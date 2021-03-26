@@ -83,10 +83,10 @@ public final class SmartThingsAPI: API {
                 completionHandler(.failure(.unknownError))
             } else {
                 if let data = data {
-                    print(data)
+                    print("(performRequest) Data: \(data)")
                     completionHandler(.success(data))
                 } else {
-                    print("Data is not set!")
+                    print("(performRequest) Data: N/A")
                     completionHandler(.failure(.dataNotSet))
                 }
             }
