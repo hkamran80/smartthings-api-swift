@@ -18,8 +18,6 @@ public final class SmartThingsAPI: API {
     }
     
     public func getDevices(completionHandler: @escaping (Result<[Device], RequestError>) -> Void) {
-        print("Fetching device list...")
-        
         self.performRequest(path: .devices, method: .get) { result in
             var devices: [Device] = []
             
@@ -27,28 +25,24 @@ public final class SmartThingsAPI: API {
                 do {
                     let json = try JSON(data: responseData)
                     
-                    print("Iterating...")
-                    
-                    json["items"].forEach { _, device in                        
+                    json["items"].forEach { _, device in
                         let deviceName = device["label"].stringValue != "" ? device["label"].stringValue : device["name"].stringValue
                         let deviceCapabilities = device["components"]["capabilities"]
                         
-                        print("Device (\(deviceName)) Capabilities: \(deviceCapabilities)")
+                        print(deviceCapabilities)
                         
                         let element = Device(id: device["deviceId"].stringValue, name: deviceName, capabilities: [])
 
                         devices.append(element)
                     }
                     
-                    print("Iteration complete. Returning data to completion handler...")
-                    
                     completionHandler(.success(devices))
                 } catch {
-                    print("[JSON Parsing] \(error.localizedDescription)")
+                    print("(getDevices) JSON error: \(error.localizedDescription)")
                     completionHandler(.failure(.badJson))
                 }
             } else {
-                print("Request failed")
+                print("(getDevices) Request failed")
                 completionHandler(.failure(.requestFailed))
             }
         }
@@ -68,9 +62,6 @@ public final class SmartThingsAPI: API {
             return
         }
         
-        // TODO: Remove
-        print("(performRequest) url: \(url)")
-        
         let session = URLSession.shared
         var request = URLRequest(url: url)
         
@@ -83,19 +74,13 @@ public final class SmartThingsAPI: API {
                 completionHandler(.failure(.unknownError))
             } else {
                 if let data = data {
-                    print("(performRequest) Data: \(data)")
                     completionHandler(.success(data))
                 } else {
-                    print("(performRequest) Data: N/A")
                     completionHandler(.failure(.dataNotSet))
                 }
             }
         }
         
-        print("(performRequest) Notice: Task declared")
-        
         task.resume()
-        
-        print("(performRequest) Notice: Task resumed")
     }
 }
